@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itheima.dao.CheckItemDao">
+  <!--查询检查项-不分页-->
+  <select id="findAll" resultType="checkItem">
+        select * from t_checkitem
+    </select>
+
+  <!--分页查询所有检查项-->
+  <select id="findPage" parameterType="string" resultType="CheckItem">
+    select * from t_checkitem
+    <if test="value != null and value.length > 0">
+      where name = #{value} or code = #{value}
+    </if>
+  </select>
+
+  <!--添加检查项-->
+  <insert id="addCheckItem" parameterType="CheckItem">
+        insert into t_checkitem (code,name,sex,age,price,type,remark,attention) VALUES (#{code},#{name},#{sex},#{age},#{price},#{type},#{remark},#{attention})
+    </insert>
+
+  <!--根据ID回显数据-->
+  <select id="findById" parameterType="int" resultType="com.itheima.pojo.CheckItem">
+        select * from t_checkitem where id =#{value}
+    </select>
+
+  <!--编辑检查项-->
+  <update id="edit" parameterType="CheckItem">
+    update t_checkitem
+    <set>
+      <if test="code != null and code.length > 0">
+        code=#{code},
+      </if>
+      <if test="name != null and name.length > 0">
+        name=#{name},
+      </if>
+      <if test="sex != null and sex.length > 0">
+        sex=#{sex},
+      </if>
+      <if test="age != null and age.length > 0">
+        age=#{age},
+      </if>
+      <if test="price != null">
+        price=#{price},
+      </if>
+      <if test="type != null and type.length > 0">
+        type=#{type},
+      </if>
+      <if test="remark != null and remark.length > 0">
+        remark=#{remark},
+      </if>
+      <if test="attention != null and attention.length > 0">
+        attention=#{attention}
+      </if>
+    </set>
+    where id=#{id}
+  </update>
+
+  <!--根据ID删除检查项-->
+  <delete id="deleteCheckItem" parameterType="int">
+        delete from t_checkitem where id =#{value}
+    </delete>
+
+  <!--根据套餐对应的检查组查询检查项-->
+  <select id="findCheckItemListById" resultType="CheckItem" parameterType="int">
+    select * from t_checkitem where id in (select checkitem_id from t_checkgroup_checkitem where checkgroup_id =#{id})
+  </select>
+</mapper>
